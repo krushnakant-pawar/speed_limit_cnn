@@ -5,6 +5,6 @@ ClassId,Name
 3,Speed limit (60km/h)
 4,Speed limit (70km/h)
 5,Speed limit (80km/h)
-7,Speed limit (100km/h)
-8,Speed limit (120km/h)
-14,Stop
+6,Speed limit (100km/h)
+7,Speed limit (120km/h)
+8,Stop
