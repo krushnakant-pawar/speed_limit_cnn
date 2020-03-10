@@ -17,12 +17,12 @@ from keras.preprocessing.image import ImageDataGenerator
 
 ################# Parameters #####################
 
-path = "myData" # folder with all the class folders
+path = "Data" # folder with all the class folders
 labelFile = 'labels.csv' # file with all names of classes
-batch_size_val=50  # how many to process together
+batch_size_val=32  # how many to process together
 steps_per_epoch_val=2000
 epochs_val=100
-imageDimesions = (32,32,3)
+imageDimesions = (50,50,3)
 testRatio = 0.2    # if 1000 images split will 200 for testing
 validationRatio = 0.2 # if 1000 images 20% of remaining 800 will be 160 for validation
 ###################################################
@@ -72,31 +72,6 @@ assert(X_test.shape[1:]==(imageDimesions))," The dimesionas of the Test images a
 data=pd.read_csv(labelFile)
 print("data shape ",data.shape,type(data))
 
-############################### DISPLAY SOME SAMPLES IMAGES  OF ALL THE CLASSES
-'''num_of_samples = []
-cols = 5
-num_classes = noOfClasses
-fig, axs = plt.subplots(nrows=num_classes, ncols=cols, figsize=(5, 300))
-fig.tight_layout()
-for i in range(cols):
-    for j,row in data.iterrows():
-        x_selected = X_train[y_train == j]
-        axs[j][i].imshow(x_selected[random.randint(0, len(x_selected)- 1), :, :], cmap=plt.get_cmap("gray"))
-        axs[j][i].axis("off")
-        if i == 2:
-            axs[j][i].set_title(str(j)+ "-"+row["Name"])
-            num_of_samples.append(len(x_selected))
-
-
-############################### DISPLAY A BAR CHART SHOWING NO OF SAMPLES FOR EACH CATEGORY
-print(num_of_samples)
-plt.figure(figsize=(12, 4))
-plt.bar(range(0, num_classes), num_of_samples)
-plt.title("Distribution of the training dataset")
-plt.xlabel("Class number")
-plt.ylabel("Number of images")
-plt.show()
-'''
 ############################### PREPROCESSING THE IMAGES
 
 def grayscale(img):
@@ -132,16 +107,6 @@ dataGen.fit(X_train)
 batches= dataGen.flow(X_train,y_train,batch_size=20)  # REQUESTING DATA GENRATOR TO GENERATE IMAGES  BATCH SIZE = NO. OF IMAGES CREAED EACH TIME ITS CALLED
 X_batch,y_batch = next(batches)
 
-'''
-# TO SHOW AGMENTED IMAGE SAMPLES
-fig,axs=plt.subplots(1,15,figsize=(20,5))
-fig.tight_layout()
-
-for i in range(15):
-    axs[i].imshow(X_batch[i].reshape(imageDimesions[0],imageDimesions[1]))
-    axs[i].axis('off')
-plt.show()
-'''
 
 y_train = to_categorical(y_train,noOfClasses)
 y_validation = to_categorical(y_validation,noOfClasses)
@@ -180,20 +145,7 @@ print(model.summary())
 history=model.fit_generator(dataGen.flow(X_train,y_train,batch_size=batch_size_val),steps_per_epoch=steps_per_epoch_val,epochs=epochs_val,validation_data=(X_validation,y_validation),shuffle=1)
 
 ############################### PLOT
-'''plt.figure(1)
-plt.plot(history.history['loss'])
-plt.plot(history.history['val_loss'])
-plt.legend(['training','validation'])
-plt.title('loss')
-plt.xlabel('epoch')
-plt.figure(2)
-plt.plot(history.history['accuracy'])
-plt.plot(history.history['val_accuracy'])
-plt.legend(['training','validation'])
-plt.title('Acurracy')
-plt.xlabel('epoch')
-plt.show()
-'''
+
 score =model.evaluate(X_test,y_test,verbose=0)
 print('Test Score:',score[0])
 print('Test Accuracy:',score[1])
